@@ -3,6 +3,7 @@ class TuringMachine:
    '''
    initialize the Turing Machine, read the program and input
    '''
+
    def __init__(self, program, input_tape, N, state=0):
      self.trf = {}
      self.state = str(state)
