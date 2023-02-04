@@ -16,18 +16,21 @@ class TuringMachine:
         self.trf = {}  # card:{card:{write, move, next_card}}
         for line in program.splitlines():
             line = line.split(' ')
-            if line[0] not in self.trf.keys():
-                self.trf[line[0]] = {}
+            while '' in line:
+                line.remove('')
+            if line[0]!="#":
+                if line[0] not in self.trf.keys():
+                    self.trf[line[0]] = {}
 
-            order = ''
-            write = ''
-            move = ''
-            for i in range(1, self.nr_tapes + 1):
-                order += line[i]
-                write += line[self.nr_tapes + i]
-                move += line[self.nr_tapes * 2 + i]
+                order = ''
+                write = ''
+                move = ''
+                for i in range(1, self.nr_tapes + 1):
+                    order += line[i]
+                    write += line[self.nr_tapes + i]
+                    move += line[self.nr_tapes * 2 + i]
 
-            self.trf[line[0]][order] = {"write": write, "move": move, "next_card": line[-1]}
+                self.trf[line[0]][order] = {"write": write, "move": move, "next_card": line[-1]}
 
     '''
     step through a program
@@ -72,8 +75,11 @@ class TuringMachine:
         h = []
         iter = 0
         while self.card != 'H' and iter < max_iter:  # prevent infinite loop
+
+            if history:
+                print({"tapes": self.tapes, "head": self.heads, "card": self.card})
+
             self.step()
             iter += 1
-            if history:
-                h.append({"tapes": self.tapes, "head": self.heads, "card": self.card})
-        return h
+
+        return {"tapes": self.tapes, "head": self.heads, "card": self.card}
